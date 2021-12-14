@@ -3,6 +3,7 @@ const {
   requireAdmin,
 } = require('../middleware/auth');
 
+const {getProducts, getProduct, postProduct, putProduct, deleteProduct} = require('../controller/products');
 /** @module products */
 module.exports = (app, nextMain) => {
   /**
@@ -28,6 +29,7 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    */
   app.get('/products', requireAuth, (req, resp, next) => {
+    getProducts(req, resp, next);
   });
 
   /**
@@ -47,7 +49,8 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId', requireAuth, (req, resp, next) => {
+  app.get('/products/:productId', requireAuth, (req, resp) => {
+    getProduct(req, resp);
   });
 
   /**
@@ -73,6 +76,7 @@ module.exports = (app, nextMain) => {
    * @code {404} si el producto con `productId` indicado no existe
    */
   app.post('/products', requireAdmin, (req, resp, next) => {
+    postProduct(req, resp, next);
   });
 
 
@@ -100,6 +104,7 @@ module.exports = (app, nextMain) => {
    * @code {404} si el producto con `productId` indicado no existe
    */
   app.put('/products/:productId', requireAdmin, (req, resp, next) => {
+    putProduct(req, resp, next);
   });
 
   /**
@@ -121,6 +126,8 @@ module.exports = (app, nextMain) => {
    * @code {404} si el producto con `productId` indicado no existe
    */
   app.delete('/products/:productId', requireAdmin, (req, resp, next) => {
+
+    deleteProduct(req, resp, next);
   });
 
   nextMain();

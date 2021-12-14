@@ -5,8 +5,18 @@ services:
     # https://hub.docker.com/_/mongo
     # https://hub.docker.com/_/postgres
     # https://hub.docker.com/_/mysql
+    image: mongo
+    volumes:
+    - ./db-data:/data/db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bq
+      MONGO_INITDB_ROOT_PASSWORD: secret
     networks:
+      - public
       - private
+    ports:
+      - 27017:27017
   node:
     image: node:12 # https://hub.docker.com/_/node/
     user: node
@@ -14,7 +24,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: <CONNECTION STRING>
+      DB_URL: mongodb://bq:secret@db:27017/bq?authSource=admin
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
@@ -27,7 +37,8 @@ services:
       # máquina
       - 80:8080
     # reinstalamos las dependencias y levantamos el servidor
-    command: bash -c 'rm -rf node_modules && npm install && npm start'
+    # command: bash -c 'rm -rf node_modules && npm install && npm start'
+    command: bash -c 'npm start'    
     depends_on:
       - db
     networks:
